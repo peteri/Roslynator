@@ -9,12 +9,9 @@ using Roslynator;
 using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
 
-namespace Test
+class C
 {
-    public static class Foo
+    public void M()
     {
-        public static void Bar()
-        {
-        }
     }
 }
