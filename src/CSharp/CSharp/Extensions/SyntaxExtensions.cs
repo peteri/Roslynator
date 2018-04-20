@@ -238,6 +238,19 @@ namespace Roslynator.CSharp
                 classDeclaration.OpenBraceToken.SpanStart,
                 classDeclaration.CloseBraceToken.Span.End);
         }
+
+        public static ClassDeclarationSyntax AddAttributeLists(
+            this ClassDeclarationSyntax classDeclaration,
+            bool keepDocumentationCommentOnTop,
+            params AttributeListSyntax[] attributeLists)
+        {
+            return AddAttributeLists(
+                classDeclaration,
+                keepDocumentationCommentOnTop,
+                attributeLists,
+                withAttributeLists: (f, g) => f.WithAttributeLists(g),
+                addAttributeLists: (f, g) => f.AddAttributeLists(g));
+        }
         #endregion ClassDeclarationSyntax
 
         #region CommonForEachStatementSyntax
@@ -926,6 +939,19 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(interfaceDeclaration));
 
             return interfaceDeclaration.WithMembers(List(members));
+        }
+
+        public static InterfaceDeclarationSyntax AddAttributeLists(
+            this InterfaceDeclarationSyntax interfaceDeclaration,
+            bool keepDocumentationCommentOnTop,
+            params AttributeListSyntax[] attributeLists)
+        {
+            return AddAttributeLists(
+                interfaceDeclaration,
+                keepDocumentationCommentOnTop,
+                attributeLists,
+                withAttributeLists: (f, g) => f.WithAttributeLists(g),
+                addAttributeLists: (f, g) => f.AddAttributeLists(g));
         }
         #endregion InterfaceDeclarationSyntax
 
@@ -1751,6 +1777,19 @@ namespace Roslynator.CSharp
             return TextSpan.FromBounds(
                 structDeclaration.OpenBraceToken.SpanStart,
                 structDeclaration.CloseBraceToken.Span.End);
+        }
+
+        public static StructDeclarationSyntax AddAttributeLists(
+            this StructDeclarationSyntax structDeclaration,
+            bool keepDocumentationCommentOnTop,
+            params AttributeListSyntax[] attributeLists)
+        {
+            return AddAttributeLists(
+                structDeclaration,
+                keepDocumentationCommentOnTop,
+                attributeLists,
+                withAttributeLists: (f, g) => f.WithAttributeLists(g),
+                addAttributeLists: (f, g) => f.AddAttributeLists(g));
         }
         #endregion StructDeclarationSyntax
 
@@ -3486,6 +3525,41 @@ namespace Roslynator.CSharp
                         return typeDeclaration;
                     }
             }
+        }
+
+        private static T AddAttributeLists<T>(
+            this T typeDeclaration,
+            bool keepDocumentationCommentOnTop,
+            AttributeListSyntax[] attributeLists,
+            Func<T, SyntaxList<AttributeListSyntax>, T> withAttributeLists,
+            Func<T, AttributeListSyntax[], T> addAttributeLists) where T : TypeDeclarationSyntax
+        {
+            if (attributeLists == null)
+                throw new ArgumentNullException(nameof(attributeLists));
+
+            if (typeDeclaration == null)
+                throw new ArgumentNullException(nameof(typeDeclaration));
+
+            if (keepDocumentationCommentOnTop
+                && !typeDeclaration.AttributeLists.Any()
+                && attributeLists.Length > 0)
+            {
+                SyntaxTriviaList leadingTrivia = typeDeclaration.GetLeadingTrivia();
+
+                for (int i = 0; i < leadingTrivia.Count; i++)
+                {
+                    if (leadingTrivia[i].IsDocumentationCommentTrivia())
+                    {
+                        attributeLists[0] = attributeLists[0].PrependToLeadingTrivia(leadingTrivia.Take(i + 1));
+
+                        typeDeclaration = typeDeclaration.WithLeadingTrivia(leadingTrivia.Skip(i + 1));
+
+                        return withAttributeLists(typeDeclaration, List(attributeLists));
+                    }
+                }
+            }
+
+            return addAttributeLists(typeDeclaration, attributeLists);
         }
         #endregion TypeDeclarationSyntax
 
