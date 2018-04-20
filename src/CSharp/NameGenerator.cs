@@ -212,13 +212,14 @@ namespace Roslynator
         {
             string name = CreateNameFromTypeSymbolHelper.CreateName(typeSymbol);
 
-            if (name != null
-                && firstCharToLower)
+            if (name != null)
             {
-                return StringUtility.FirstCharToLower(name);
+                Debug.Assert(name.Length > 0, typeSymbol.ToString());
+
+                return (firstCharToLower) ? StringUtility.FirstCharToLower(name) : name;
             }
 
-            return name;
+            return (firstCharToLower) ? "x" : "X";
         }
 
         internal string CreateUniqueLocalName(
