@@ -239,6 +239,13 @@ namespace Roslynator.CSharp
                 classDeclaration.CloseBraceToken.Span.End);
         }
 
+        /// <summary>
+        /// Creates a new class declaration with the specified attribute lists added.
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <param name="keepDocumentationCommentOnTop">If the declaration has no attribute lists and has a documentation comment the specified attribute lists will be inserted after the documentation comment.</param>
+        /// <param name="attributeLists"></param>
+        /// <returns></returns>
         public static ClassDeclarationSyntax AddAttributeLists(
             this ClassDeclarationSyntax classDeclaration,
             bool keepDocumentationCommentOnTop,
@@ -941,6 +948,13 @@ namespace Roslynator.CSharp
             return interfaceDeclaration.WithMembers(List(members));
         }
 
+        /// <summary>
+        /// Creates a new interface declaration with the specified attribute lists added.
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <param name="keepDocumentationCommentOnTop">If the declaration has no attribute lists and has a documentation comment the specified attribute lists will be inserted after the documentation comment.</param>
+        /// <param name="attributeLists"></param>
+        /// <returns></returns>
         public static InterfaceDeclarationSyntax AddAttributeLists(
             this InterfaceDeclarationSyntax interfaceDeclaration,
             bool keepDocumentationCommentOnTop,
@@ -1615,8 +1629,15 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: make public
-        internal static SeparatedSyntaxList<TNode> RemoveRange<TNode>(
+        /// <summary>
+        /// Creates a new list with elements at the specified range removed.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="startIndex">An index of the first element to remove.</param>
+        /// <param name="count">A number of elements to remove.</param>
+        /// <returns></returns>
+        public static SeparatedSyntaxList<TNode> RemoveRange<TNode>(
             this SeparatedSyntaxList<TNode> list,
             int startIndex,
             int count) where TNode : SyntaxNode
@@ -1822,6 +1843,13 @@ namespace Roslynator.CSharp
                 structDeclaration.CloseBraceToken.Span.End);
         }
 
+        /// <summary>
+        /// Creates a new struct declaration with the specified attribute lists added.
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <param name="keepDocumentationCommentOnTop">If the declaration has no attribute lists and has a documentation comment the specified attribute lists will be inserted after the documentation comment.</param>
+        /// <param name="attributeLists"></param>
+        /// <returns></returns>
         public static StructDeclarationSyntax AddAttributeLists(
             this StructDeclarationSyntax structDeclaration,
             bool keepDocumentationCommentOnTop,
@@ -2077,8 +2105,15 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: make public
-        internal static SyntaxList<TNode> RemoveRange<TNode>(
+        /// <summary>
+        /// Creates a new list with elements at the specified range removed.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="startIndex">An index of the first element to remove.</param>
+        /// <param name="count">A number of elements to remove.</param>
+        /// <returns></returns>
+        public static SyntaxList<TNode> RemoveRange<TNode>(
             this SyntaxList<TNode> list,
             int startIndex,
             int count) where TNode : SyntaxNode
