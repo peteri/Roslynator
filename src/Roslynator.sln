@@ -59,9 +59,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGeneration", "Tools\Cod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharp.Workspaces", "CSharp.Workspaces\CSharp.Workspaces.csproj", "{56DA29A3-C179-471C-9941-42426EEB84D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Utilities.Library", "Tests\Tests.Utilities.Library\Tests.Utilities.Library.csproj", "{B26059E8-E5D8-415F-AF7C-210750DB4CB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.TestLibrary", "Tests\Tests.TestLibrary\Tests.TestLibrary.csproj", "{B26059E8-E5D8-415F-AF7C-210750DB4CB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Utilities.Console", "Tests\Tests.Utilities.Console\Tests.Utilities.Console.csproj", "{09B4373A-8AA6-48CF-804C-E209CC12BC5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.TestConsole", "Tests\Tests.TestConsole\Tests.TestConsole.csproj", "{09B4373A-8AA6-48CF-804C-E209CC12BC5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Workspaces", "Common.Workspaces\Common.Workspaces.csproj", "{D6B3FAF2-C92D-4B2D-82DF-D6B3DD7F4107}"
 EndProject
@@ -75,11 +75,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyzers.Tests", "Tests\An
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A1DB0C05-3710-4B69-955F-2F46E330591B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Core", "Tests\Tests.Core\Tests.Core.csproj", "{55CD01C6-FF55-4828-887C-3067BC8242BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Utilities", "Tests\Tests.Utilities\Tests.Utilities.csproj", "{55CD01C6-FF55-4828-887C-3067BC8242BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Refactorings.Tests", "Tests\Refactorings.Tests\Refactorings.Tests.csproj", "{B2E65325-8B4A-46D1-9726-0B1AF9BF26EC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeFixes.Tests", "Tests\CodeFixes.Tests\CodeFixes.Tests.csproj", "{BD31315B-B89B-43F7-994D-EBE6FFC2D89B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Core", "Tests\Tests.Core\Tests.Core.csproj", "{306D8762-6A4E-4957-ABE6-5C30E13BD95F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -289,6 +291,12 @@ Global
 		{BD31315B-B89B-43F7-994D-EBE6FFC2D89B}.DebugVS|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD31315B-B89B-43F7-994D-EBE6FFC2D89B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD31315B-B89B-43F7-994D-EBE6FFC2D89B}.ReleaseTools|Any CPU.ActiveCfg = Release|Any CPU
+		{306D8762-6A4E-4957-ABE6-5C30E13BD95F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{306D8762-6A4E-4957-ABE6-5C30E13BD95F}.DebugTests|Any CPU.ActiveCfg = Debug|Any CPU
+		{306D8762-6A4E-4957-ABE6-5C30E13BD95F}.DebugTests|Any CPU.Build.0 = Debug|Any CPU
+		{306D8762-6A4E-4957-ABE6-5C30E13BD95F}.DebugVS|Any CPU.ActiveCfg = Debug|Any CPU
+		{306D8762-6A4E-4957-ABE6-5C30E13BD95F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{306D8762-6A4E-4957-ABE6-5C30E13BD95F}.ReleaseTools|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -313,6 +321,7 @@ Global
 		{55CD01C6-FF55-4828-887C-3067BC8242BE} = {A1DB0C05-3710-4B69-955F-2F46E330591B}
 		{B2E65325-8B4A-46D1-9726-0B1AF9BF26EC} = {A1DB0C05-3710-4B69-955F-2F46E330591B}
 		{BD31315B-B89B-43F7-994D-EBE6FFC2D89B} = {A1DB0C05-3710-4B69-955F-2F46E330591B}
+		{306D8762-6A4E-4957-ABE6-5C30E13BD95F} = {A1DB0C05-3710-4B69-955F-2F46E330591B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D1943010-8F47-4798-9A3D-97BC24CF1AC4}

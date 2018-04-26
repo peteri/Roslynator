@@ -7,7 +7,7 @@ using Roslynator.CSharp;
 using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.CodeFixes;
 using Xunit;
-using static Roslynator.Tests.CSharpDiagnosticVerifier;
+using static Roslynator.Tests.CSharp.CSharpDiagnosticVerifier;
 
 namespace Roslynator.Analyzers.Tests
 {
@@ -19,23 +19,10 @@ namespace Roslynator.Analyzers.Tests
 
         private static CodeFixProvider CodeFixProvider { get; } = new UseExplicitTypeInsteadOfVarInForEachCodeFixProvider();
 
-        private const string SourceTemplate = @"
-using System.Collections.Generic;
-using System.Linq;
-
-class C
-{
-    void M()
-    {
-    }
-}
-";
-
         [Fact]
         public static void TestDiagnosticWithCodeFix()
         {
-            VerifyDiagnosticAndCodeFix(
-@"
+            VerifyDiagnosticAndFix(@"
 using System;
 using System.Collections.Generic;
 
@@ -50,8 +37,7 @@ class C
         }
     }
 }
-",
-@"
+", @"
 using System;
 using System.Collections.Generic;
 
@@ -66,44 +52,27 @@ class C
         }
     }
 }
-",
-                descriptor: Descriptor,
-                analyzer: Analyzer,
-                codeFixProvider: CodeFixProvider);
+", Descriptor, Analyzer, CodeFixProvider);
         }
 
-        //[Theory]
-        //[InlineData("", "")]
-        internal static void TestDiagnosticWithCodeFix2(string fixableCode, string fixedCode)
-        {
-            VerifyDiagnosticAndCodeFix(
-                SourceTemplate,
-                fixableCode,
-                fixedCode,
-                descriptor: Descriptor,
-                analyzer: Analyzer,
-                codeFixProvider: CodeFixProvider);
-        }
-
-        //[Fact]
+        [Fact]
         internal static void TestNoDiagnostic()
         {
-            VerifyNoDiagnostic(
-@"
-",
-                descriptor: Descriptor,
-                analyzer: Analyzer);
-        }
+            VerifyNoDiagnostic(@"
+using System;
+using System.Collections.Generic;
 
-        //[Theory]
-        //[InlineData("")]
-        internal static void TestNoDiagnostic2(string fixableCode)
+class C
+{
+    public void M()
+    {
+        var items = new List<DateTime>();
+
+        foreach (DateTime item in items)
         {
-            VerifyNoDiagnostic(
-                SourceTemplate,
-                fixableCode,
-                descriptor: Descriptor,
-                analyzer: Analyzer);
+        }
+    }
+}", Descriptor, Analyzer);
         }
     }
 }

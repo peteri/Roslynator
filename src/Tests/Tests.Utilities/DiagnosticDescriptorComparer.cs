@@ -1,22 +1,27 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
-    public abstract class DiagnosticDescriptorComparer : IComparer<DiagnosticDescriptor>, IEqualityComparer<DiagnosticDescriptor>
+    public abstract class DiagnosticDescriptorComparer : IComparer<DiagnosticDescriptor>, IEqualityComparer<DiagnosticDescriptor>, IComparer, IEqualityComparer
     {
-        private static readonly StringComparer _ordinalStringComparer = StringComparer.Ordinal;
-
-        public static DiagnosticDescriptorComparer IdOrdinal { get; } = new DiagnosticDescriptorIdOrdinalComparer();
+        public static DiagnosticDescriptorComparer Id { get; } = new DiagnosticDescriptorIdOrdinalComparer();
 
         public abstract int Compare(DiagnosticDescriptor x, DiagnosticDescriptor y);
 
+        public abstract int Compare(object x, object y);
+
         public abstract bool Equals(DiagnosticDescriptor x, DiagnosticDescriptor y);
 
+        new public abstract bool Equals(object x, object y);
+
         public abstract int GetHashCode(DiagnosticDescriptor obj);
+
+        public abstract int GetHashCode(object obj);
 
         private class DiagnosticDescriptorIdOrdinalComparer : DiagnosticDescriptorComparer
         {
@@ -34,6 +39,11 @@ namespace Roslynator
                 return string.Compare(x.Id, y.Id, StringComparison.Ordinal);
             }
 
+            public override int Compare(object x, object y)
+            {
+                return Compare(x as DiagnosticDescriptor, y as DiagnosticDescriptor);
+            }
+
             public override bool Equals(DiagnosticDescriptor x, DiagnosticDescriptor y)
             {
                 if (object.ReferenceEquals(x, y))
@@ -48,9 +58,19 @@ namespace Roslynator
                 return string.Equals(x.Id, y.Id, StringComparison.Ordinal);
             }
 
+            public override bool Equals(object x, object y)
+            {
+                return Equals(x as DiagnosticDescriptor, y as DiagnosticDescriptor);
+            }
+
             public override int GetHashCode(DiagnosticDescriptor obj)
             {
-                return _ordinalStringComparer.GetHashCode(obj?.Id);
+                return StringComparer.Ordinal.GetHashCode(obj?.Id);
+            }
+
+            public override int GetHashCode(object obj)
+            {
+                return GetHashCode(obj as DiagnosticDescriptor);
             }
         }
     }

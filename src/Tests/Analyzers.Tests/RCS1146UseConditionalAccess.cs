@@ -7,7 +7,7 @@ using Roslynator.CSharp;
 using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.CodeFixes;
 using Xunit;
-using static Roslynator.Tests.CSharpDiagnosticVerifier;
+using static Roslynator.Tests.CSharp.CSharpDiagnosticVerifier;
 
 namespace Roslynator.Analyzers.Tests
 {
@@ -22,8 +22,7 @@ namespace Roslynator.Analyzers.Tests
         [Fact]
         public static void TestDiagnosticWithCodeFix_IfStatement()
         {
-            VerifyDiagnosticAndCodeFix(
-@"
+            VerifyDiagnosticAndFix(@"
 public class C
 {
     public void M()
@@ -55,8 +54,7 @@ public struct S
         }>>>
     }
 }
-",
-@"
+", @"
 public class C
 {
     public void M()
@@ -80,17 +78,13 @@ public struct S
         x?.M();
     }
 }
-",
-                DiagnosticDescriptors.UseConditionalAccess,
-                Analyzer,
-                CodeFixProvider);
+", DiagnosticDescriptors.UseConditionalAccess, Analyzer, CodeFixProvider);
         }
 
         [Fact]
         public static void TestDiagnosticWithCodeFix_LogicalAndExpression_ReferenceType()
         {
-            VerifyDiagnosticAndCodeFix(
-@"
+            VerifyDiagnosticAndFix(@"
 using System.Collections.Generic;
 
 public class Foo
@@ -147,8 +141,7 @@ public class Foo
         if (<<<dic != null && !dic[0].Equals(""x"")>>>) { }
     }
 }
-",
-@"
+", @"
 using System.Collections.Generic;
 
 public class Foo
@@ -204,17 +197,13 @@ public class Foo
         if (dic?[0].Equals(""x"") == false) { }
     }
 }
-",
-                Descriptor,
-                Analyzer,
-                CodeFixProvider);
+", Descriptor, Analyzer, CodeFixProvider);
         }
 
         [Fact]
         public static void TestDiagnosticWithCodeFix_LogicalAndExpression_NullableType()
         {
-            VerifyDiagnosticAndCodeFix(
-@"
+            VerifyDiagnosticAndFix(@"
 public struct Foo
 {
     private const string NonNullConst = ""x"";
@@ -244,8 +233,7 @@ public struct Foo
         if (x != null && <<<x.Value.ToString() != null && x.Value.ToString().ToString() != null>>>) { }
     }
 }
-",
-@"
+", @"
 public struct Foo
 {
     private const string NonNullConst = ""x"";
@@ -275,17 +263,13 @@ public struct Foo
         if (x?.ToString()?.ToString() != null) { }
     }
 }
-",
-                Descriptor,
-                Analyzer,
-                CodeFixProvider);
+", Descriptor, Analyzer, CodeFixProvider);
         }
 
         [Fact]
         public static void TestNoDiagnostic_LogicalAndExpression_ReferenceType()
         {
-            VerifyNoDiagnostic(
-@"
+            VerifyNoDiagnostic(@"
 public class Foo
 {
     private const string NullConst = null;
@@ -316,16 +300,13 @@ public class Foo
         if (x != null && (x.Value != null) is object _) { }
     }
 }
-",
-                Descriptor,
-                Analyzer);
+", Descriptor, Analyzer);
         }
 
         [Fact]
         public static void TestNoDiagnostic_LogicalAndExpression_ValueType()
         {
-            VerifyNoDiagnostic(
-@"
+            VerifyNoDiagnostic(@"
 public struct Foo
 {
     public int Value { get; }
@@ -341,16 +322,13 @@ public struct Foo
 
     public static bool operator !=(Foo left, Foo right) => !(left == right);
 }
-",
-                Descriptor,
-                Analyzer);
+", Descriptor, Analyzer);
         }
 
         [Fact]
         public static void TestNoDiagnostic_LogicalAndExpression_NullableType()
         {
-            VerifyNoDiagnostic(
-@"
+            VerifyNoDiagnostic(@"
 public struct Foo
 {
     public void M()
@@ -392,16 +370,13 @@ public struct Foo
 
     public static bool operator !=(Foo left, Foo right) => !(left == right);
 }
-",
-                Descriptor,
-                Analyzer);
+", Descriptor, Analyzer);
         }
 
         [Fact]
         public static void TestNoDiagnostic_LogicalAndExpression_OutParameter()
         {
-            VerifyNoDiagnostic(
-@"
+            VerifyNoDiagnostic(@"
 using System.Collections.Generic;
 
 public class C
@@ -420,16 +395,13 @@ public class C
         }
     }
 }
-",
-                Descriptor,
-                Analyzer);
+", Descriptor, Analyzer);
         }
 
         [Fact]
         public static void TestNoDiagnostic_LogicalAndExpression_ExpressionTree()
         {
-            VerifyNoDiagnostic(
-@"
+            VerifyNoDiagnostic(@"
 using System;
 using System.Linq.Expressions;
 
@@ -442,9 +414,7 @@ public class C
         M(() => s != null && s.GetHashCode() == 0);
     }
 }
-",
-                Descriptor,
-                Analyzer);
+", Descriptor, Analyzer);
         }
     }
 }

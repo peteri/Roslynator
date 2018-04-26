@@ -63,7 +63,7 @@ namespace Roslynator.Tests
         {
             StringBuilder sb = StringBuilderCache.GetInstance(s.Length - OpenMarker.Length - CloseMarker.Length);
 
-            var spans = new List<TextSpan>();
+            List<TextSpan> spans = null;
 
             int lastPos = 0;
 
@@ -94,7 +94,9 @@ namespace Roslynator.Tests
                             if (inSpan
                                 && IsCloseMarker(s, length, i))
                             {
-                                spans.Add(new TextSpan(sb.Length, i - lastPos));
+                                var span = new TextSpan(sb.Length, i - lastPos);
+
+                                (spans ?? (spans = new List<TextSpan>())).Add(span);
 
                                 sb.Append(s, lastPos, i - lastPos);
 
@@ -121,7 +123,7 @@ namespace Roslynator.Tests
         {
             StringBuilder sb = StringBuilderCache.GetInstance(s.Length - OpenMarker.Length - CloseMarker.Length);
 
-            var diagnostics = new List<Diagnostic>();
+            List<Diagnostic> diagnostics = null;
 
             int lastPos = 0;
 
@@ -191,7 +193,7 @@ namespace Roslynator.Tests
 
                                 Diagnostic diagnostic = Diagnostic.Create(descriptor, location);
 
-                                diagnostics.Add(diagnostic);
+                                (diagnostics ?? (diagnostics = new List<Diagnostic>())).Add(diagnostic);
 
                                 i += 2;
 

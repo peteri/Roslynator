@@ -5,55 +5,63 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using static Roslynator.Tests.CSharpCodeFixVerifier;
+using static Roslynator.Tests.CSharp.CSharpCodeFixVerifier;
 
-namespace Roslynator.Tests
+namespace Roslynator.Tests.CSharp
 {
     public static class CSharpDiagnosticVerifier
     {
-        public static void VerifyDiagnosticAndCodeFix(
+        public static void VerifyDiagnosticAndFix(
             string source,
             string newSource,
             DiagnosticDescriptor descriptor,
             DiagnosticAnalyzer analyzer,
-            CodeFixProvider codeFixProvider,
+            CodeFixProvider fixProvider,
             bool allowNewCompilerDiagnostics = false)
         {
-            (string source2, List<Diagnostic> diagnostics) = TextUtility.GetMarkedDiagnostics(source, descriptor, WorkspaceUtility.DefaultCSharpFileName);
+            (string source2, List<Diagnostic> diagnostics) = TextUtility.GetMarkedDiagnostics(source, descriptor, FileUtility.DefaultCSharpFileName);
 
             VerifyDiagnostic(source2, analyzer, diagnostics.ToArray());
 
-            VerifyCodeFix(source2, newSource, analyzer, codeFixProvider, allowNewCompilerDiagnostics);
+            VerifyFix(source2, newSource, analyzer, fixProvider, allowNewCompilerDiagnostics);
         }
 
-        public static void VerifyDiagnosticAndCodeFix(
+        public static void VerifyDiagnosticAndFix(
             string source,
             string newSource,
             TextSpan span,
             DiagnosticDescriptor descriptor,
             DiagnosticAnalyzer analyzer,
-            CodeFixProvider codeFixProvider,
+            CodeFixProvider fixProvider,
             bool allowNewCompilerDiagnostics = false)
         {
             VerifyDiagnostic(source, span, analyzer, descriptor);
 
-            VerifyCodeFix(source, newSource, analyzer, codeFixProvider, allowNewCompilerDiagnostics);
+            VerifyFix(source, newSource, analyzer, fixProvider, allowNewCompilerDiagnostics);
         }
 
-        public static void VerifyDiagnosticAndCodeFix(
+        public static void VerifyDiagnosticAndFix(
             string source,
             string fixableCode,
             string fixedCode,
             DiagnosticDescriptor descriptor,
             DiagnosticAnalyzer analyzer,
-            CodeFixProvider codeFixProvider,
+            CodeFixProvider fixProvider,
             bool allowNewCompilerDiagnostics = false)
         {
             (string source2, string newSource, TextSpan span) = TextUtility.GetMarkedSpan(source, fixableCode, fixedCode);
 
+            (string source3, List<TextSpan> spans) = TextUtility.GetMarkedSpans(source2);
+
+            if (spans != null)
+            {
+                source2 = source3;
+                span = spans[0];
+            }
+
             VerifyDiagnostic(source2, span, analyzer, descriptor);
 
-            VerifyCodeFix(source2, newSource, analyzer, codeFixProvider, allowNewCompilerDiagnostics);
+            VerifyFix(source2, newSource, analyzer, fixProvider, allowNewCompilerDiagnostics);
         }
 
         public static void VerifyDiagnostic(
@@ -62,7 +70,7 @@ namespace Roslynator.Tests
             DiagnosticAnalyzer analyzer,
             DiagnosticDescriptor descriptor)
         {
-            Location location = Location.Create(WorkspaceUtility.DefaultCSharpFileName, span, span.ToLinePositionSpan(source));
+            Location location = Location.Create(FileUtility.DefaultCSharpFileName, span, span.ToLinePositionSpan(source));
 
             Diagnostic diagnostic = Diagnostic.Create(descriptor, location);
 

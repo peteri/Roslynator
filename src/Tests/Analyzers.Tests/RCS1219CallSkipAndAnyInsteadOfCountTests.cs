@@ -7,7 +7,7 @@ using Roslynator.CSharp;
 using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.CodeFixes;
 using Xunit;
-using static Roslynator.Tests.CSharpDiagnosticVerifier;
+using static Roslynator.Tests.CSharp.CSharpDiagnosticVerifier;
 
 namespace Roslynator.Analyzers.Tests
 {
@@ -30,8 +30,7 @@ namespace Roslynator.Analyzers.Tests
         [InlineData("i > items.Count()", "!items.Skip(i - 1).Any()")]
         public static void TestDiagnosticWithCodeFix(string fixableCode, string fixedCode)
         {
-            VerifyDiagnosticAndCodeFix(
-@"
+            VerifyDiagnosticAndFix(@"
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,19 +46,13 @@ class C
         }
     }
 }
-",
-                fixableCode,
-                fixedCode,
-                Descriptor,
-                Analyzer,
-                CodeFixProvider);
+", fixableCode, fixedCode, Descriptor, Analyzer, CodeFixProvider);
         }
 
         [Fact]
         public static void TestNoDiagnostic()
         {
-            VerifyNoDiagnostic(
-@"
+            VerifyNoDiagnostic(@"
 using System.Collections.Generic;
 using System.Linq;
 
@@ -92,9 +85,7 @@ class C
         if (0 >= items.Count()) { }
     }
 }
-",
-                Descriptor,
-                Analyzer);
+", Descriptor, Analyzer);
         }
     }
 }

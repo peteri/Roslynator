@@ -5,110 +5,118 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Roslynator.Tests
+namespace Roslynator.Tests.CSharp
 {
     public static class CSharpCodeRefactoringVerifier
     {
-        public static void VerifyNoCodeRefactoring(
-            string source,
-            CodeRefactoringProvider codeRefactoringProvider,
-            string equivalenceKey = null)
-        {
-            (string source2, List<TextSpan> spans) = TextUtility.GetMarkedSpans(source);
-
-            CodeRefactoringVerifier.VerifyNoCodeRefactoring(
-                source: source2,
-                spans: spans,
-                codeRefactoringProvider: codeRefactoringProvider,
-                language: LanguageNames.CSharp,
-                equivalenceKey: equivalenceKey);
-        }
-
-        public static void VerifyNoCodeRefactoring(
-            string source,
-            TextSpan span,
-            CodeRefactoringProvider codeRefactoringProvider,
-            string equivalenceKey = null)
-        {
-            CodeRefactoringVerifier.VerifyNoCodeRefactoring(
-                source: source,
-                span: span,
-                codeRefactoringProvider: codeRefactoringProvider,
-                language: LanguageNames.CSharp,
-                equivalenceKey: equivalenceKey);
-        }
-
-        public static void VerifyCodeRefactoring(
+        public static void VerifyRefactoring(
             string source,
             string newSource,
-            CodeRefactoringProvider codeRefactoringProvider,
+            CodeRefactoringProvider refactoringProvider,
             string equivalenceKey = null,
             bool allowNewCompilerDiagnostics = false)
         {
             (string source2, List<TextSpan> spans) = TextUtility.GetMarkedSpans(source);
 
-            VerifyCodeRefactoring(
+            VerifyRefactoring(
                 source: source2,
                 newSource: newSource,
                 spans: spans,
-                codeRefactoringProvider: codeRefactoringProvider,
+                refactoringProvider: refactoringProvider,
                 equivalenceKey: equivalenceKey,
                 allowNewCompilerDiagnostics: allowNewCompilerDiagnostics);
         }
 
-        public static void VerifyCodeRefactoring(
+        public static void VerifyRefactoring(
             string sourceTemplate,
             string fixableCode,
             string fixedCode,
-            CodeRefactoringProvider codeRefactoringProvider,
+            CodeRefactoringProvider refactoringProvider,
             string equivalenceKey = null,
             bool allowNewCompilerDiagnostics = false)
         {
             (string source, string newSource, TextSpan span) = TextUtility.GetMarkedSpan(sourceTemplate, fixableCode, fixedCode);
 
-            VerifyCodeRefactoring(
+            (string source2, List<TextSpan> spans) = TextUtility.GetMarkedSpans(source);
+
+            if (spans != null)
+            {
+                source = source2;
+                span = spans[0];
+            }
+
+            VerifyRefactoring(
                 source: source,
                 newSource: newSource,
                 span: span,
-                codeRefactoringProvider: codeRefactoringProvider,
+                refactoringProvider: refactoringProvider,
                 equivalenceKey: equivalenceKey,
                 allowNewCompilerDiagnostics: allowNewCompilerDiagnostics);
         }
 
-        public static void VerifyCodeRefactoring(
+        public static void VerifyRefactoring(
             string source,
             string newSource,
             TextSpan span,
-            CodeRefactoringProvider codeRefactoringProvider,
+            CodeRefactoringProvider refactoringProvider,
             string equivalenceKey = null,
             bool allowNewCompilerDiagnostics = false)
         {
-            CodeRefactoringVerifier.VerifyCodeRefactoring(
+            CodeRefactoringVerifier.VerifyRefactoring(
                 source: source,
                 newSource: newSource,
                 span: span,
-                codeRefactoringProvider: codeRefactoringProvider,
+                refactoringProvider: refactoringProvider,
                 language: LanguageNames.CSharp,
                 equivalenceKey: equivalenceKey,
                 allowNewCompilerDiagnostics: allowNewCompilerDiagnostics);
         }
 
-        public static void VerifyCodeRefactoring(
+        public static void VerifyRefactoring(
             string source,
             string newSource,
             IEnumerable<TextSpan> spans,
-            CodeRefactoringProvider codeRefactoringProvider,
+            CodeRefactoringProvider refactoringProvider,
             string equivalenceKey = null,
             bool allowNewCompilerDiagnostics = false)
         {
-            CodeRefactoringVerifier.VerifyCodeRefactoring(
+            CodeRefactoringVerifier.VerifyRefactoring(
                 source: source,
                 newSource: newSource,
                 spans: spans,
-                codeRefactoringProvider: codeRefactoringProvider,
+                refactoringProvider: refactoringProvider,
                 language: LanguageNames.CSharp,
                 equivalenceKey: equivalenceKey,
                 allowNewCompilerDiagnostics: allowNewCompilerDiagnostics);
+        }
+
+        public static void VerifyNoRefactoring(
+            string source,
+            CodeRefactoringProvider refactoringProvider,
+            string equivalenceKey = null)
+        {
+            (string source2, List<TextSpan> spans) = TextUtility.GetMarkedSpans(source);
+
+            CodeRefactoringVerifier.VerifyNoRefactoring(
+                source: source2,
+                spans: spans,
+                refactoringProvider: refactoringProvider,
+                language: LanguageNames.CSharp,
+                equivalenceKey: equivalenceKey);
+        }
+
+        public static void VerifyNoRefactoring(
+            string source,
+            TextSpan span,
+            CodeRefactoringProvider refactoringProvider,
+            string equivalenceKey = null)
+        {
+            CodeRefactoringVerifier.VerifyNoRefactoring(
+                source: source,
+                span: span,
+                refactoringProvider: refactoringProvider,
+                language: LanguageNames.CSharp,
+                equivalenceKey: equivalenceKey);
         }
     }
 }

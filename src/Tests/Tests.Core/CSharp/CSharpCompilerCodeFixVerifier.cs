@@ -4,52 +4,52 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Roslynator.Tests
+namespace Roslynator.Tests.CSharp
 {
     public static class CSharpCompilerCodeFixVerifier
     {
-        public static void VerifyNoCodeFix(
-            string source,
-            CodeFixProvider codeFixProvider,
-            string equivalenceKey = null)
-        {
-            CompilerCodeFixVerifier.VerifyNoCodeFix(
-                source: source,
-                codeFixProvider: codeFixProvider,
-                language: LanguageNames.CSharp,
-                equivalenceKey: equivalenceKey);
-        }
-
-        public static void VerifyCodeFix(
+        public static void VerifyFix(
             string sourceTemplate,
             string fixableCode,
             string fixedCode,
             string diagnosticId,
-            CodeFixProvider codeFixProvider,
+            CodeFixProvider fixProvider,
             string equivalenceKey = null)
         {
             (string source, string newSource, TextSpan span) = TextUtility.GetMarkedSpan(sourceTemplate, fixableCode, fixedCode);
 
-            VerifyCodeFix(
+            VerifyFix(
                 source: source,
                 newSource: newSource,
                 diagnosticId: diagnosticId,
-                codeFixProvider: codeFixProvider,
+                fixProvider: fixProvider,
                 equivalenceKey: equivalenceKey);
         }
 
-        public static void VerifyCodeFix(
+        public static void VerifyFix(
             string source,
             string newSource,
             string diagnosticId,
-            CodeFixProvider codeFixProvider,
+            CodeFixProvider fixProvider,
             string equivalenceKey = null)
         {
-            CompilerCodeFixVerifier.VerifyCodeFix(
+            CompilerCodeFixVerifier.VerifyFix(
                 source: source,
                 newSource: newSource,
                 diagnosticId: diagnosticId,
-                codeFixProvider: codeFixProvider,
+                fixProvider: fixProvider,
+                language: LanguageNames.CSharp,
+                equivalenceKey: equivalenceKey);
+        }
+
+        public static void VerifyNoFix(
+            string source,
+            CodeFixProvider fixProvider,
+            string equivalenceKey = null)
+        {
+            CompilerCodeFixVerifier.VerifyNoFix(
+                source: source,
+                fixProvider: fixProvider,
                 language: LanguageNames.CSharp,
                 equivalenceKey: equivalenceKey);
         }

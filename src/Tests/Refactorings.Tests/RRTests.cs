@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Roslynator.CSharp.Refactorings;
 using Xunit;
-using static Roslynator.Tests.CSharpCodeRefactoringVerifier;
+using static Roslynator.Tests.CSharp.CSharpCodeRefactoringVerifier;
 
 namespace Roslynator.Refactorings.Tests
 {
@@ -14,7 +13,12 @@ namespace Roslynator.Refactorings.Tests
 
         private static CodeRefactoringProvider CodeRefactoringProvider { get; } = new RoslynatorCodeRefactoringProvider();
 
-        private const string SourceTemplate = @"
+        //[Fact]
+        public static void TestCodeRefactoring()
+        {
+            VerifyRefactoring(
+@"
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,42 +28,44 @@ class C
     {
     }
 }
-";
-
-        //[Fact]
-        public static void TestCodeRefactoring()
-        {
-            VerifyCodeRefactoring(
-@"
-",
-@"
-",
-                span: default,
-                codeRefactoringProvider: CodeRefactoringProvider,
-                equivalenceKey: RefactoringId);
+", @"
+", CodeRefactoringProvider, RefactoringId);
         }
 
         //[Theory]
         //[InlineData("", "")]
         public static void TestCodeRefactoring2(string fixableCode, string fixedCode)
         {
-            VerifyCodeRefactoring(
-                SourceTemplate,
-                fixableCode,
-                fixedCode,
-                codeRefactoringProvider: CodeRefactoringProvider,
-                equivalenceKey: RefactoringId);
+            VerifyRefactoring(@"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class C
+{
+    void M()
+    {
+    }
+}
+", fixableCode, fixedCode, CodeRefactoringProvider, RefactoringId);
         }
 
         //[Fact]
         public static void TestNoCodeRefactoring()
         {
-            VerifyNoCodeRefactoring(
+            VerifyNoRefactoring(
 @"
-",
-                span: default,
-                codeRefactoringProvider: CodeRefactoringProvider,
-                equivalenceKey: RefactoringId);
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class C
+{
+    void M()
+    {
+    }
+}
+", CodeRefactoringProvider, RefactoringId);
         }
     }
 }

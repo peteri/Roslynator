@@ -2,29 +2,14 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Simplification;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
-    public static class WorkspaceUtility
+    public static class WorkspaceFactory
     {
-        public const string TestFileName = "Test";
-        public const string TestProjectName = "TestProject";
-
-        public const string CSharpFileExtension = "cs";
-        public const string VisualBasicFileExtension = "vb";
-
-        private const int FileNumberingBase = 0;
-
-        public const string DefaultCSharpFileName = TestFileName + "0." + CSharpFileExtension;
-        public const string DefaultVisualBasicFileName = TestFileName + "0." + VisualBasicFileExtension;
-
         public static Project EmptyCSharpProject { get; } = CreateProject(LanguageNames.CSharp);
 
         public static Document CreateDocument(string source, string language)
@@ -43,7 +28,7 @@ namespace Roslynator
 
             ProjectId projectId = project.Id;
 
-            string newFileName = CreateDefaultFileName(language: language);
+            string newFileName = FileUtility.CreateDefaultFileName(language: language);
 
             DocumentId documentId = DocumentId.CreateNewId(projectId, debugName: newFileName);
 
@@ -59,10 +44,10 @@ namespace Roslynator
 
             Solution solution = project.Solution;
 
-            int count = FileNumberingBase;
+            int count = FileUtility.FileNumberingBase;
             foreach (string source in sources)
             {
-                string newFileName = CreateFileName(suffix: count, language: language);
+                string newFileName = FileUtility.CreateFileName(suffix: count, language: language);
                 DocumentId documentId = DocumentId.CreateNewId(project.Id, debugName: newFileName);
                 solution = solution.AddDocument(documentId, newFileName, SourceText.From(source));
                 count++;
@@ -73,11 +58,11 @@ namespace Roslynator
 
         public static Project CreateProject(string language)
         {
-            ProjectId projectId = ProjectId.CreateNewId(debugName: TestProjectName);
+            ProjectId projectId = ProjectId.CreateNewId(debugName: FileUtility.TestProjectName);
 
-            return new AdhocWorkspace()
+            Project project = new AdhocWorkspace()
                 .CurrentSolution
-                .AddProject(projectId, TestProjectName, TestProjectName, language)
+                .AddProject(projectId, FileUtility.TestProjectName, FileUtility.TestProjectName, language)
                 .AddMetadataReferences(
                     projectId,
                     new MetadataReference[]
@@ -87,49 +72,24 @@ namespace Roslynator
                         RuntimeMetadataReference.CreateFromAssemblyName("System.Linq.dll"),
                         RuntimeMetadataReference.CreateFromAssemblyName("System.Linq.Expressions.dll"),
                         RuntimeMetadataReference.CreateFromAssemblyName("System.Runtime.dll"),
+                        RuntimeMetadataReference.CreateFromAssemblyName("System.Collections.Immutable.dll"),
                         RuntimeMetadataReference.CreateFromAssemblyName("Microsoft.CodeAnalysis.dll"),
                         RuntimeMetadataReference.CreateFromAssemblyName("Microsoft.CodeAnalysis.CSharp.dll"),
                     })
                 .GetProject(projectId);
-        }
 
-        public static string CreateDefaultFileName(string language)
-        {
-            return (language == LanguageNames.CSharp) ? DefaultCSharpFileName : DefaultVisualBasicFileName;
-        }
+            if (language == LanguageNames.CSharp)
+            {
+                var compilationOptions = (CSharpCompilationOptions)project.CompilationOptions;
 
-        public static string CreateFileName(string fileName = TestFileName, int suffix = FileNumberingBase, string language = LanguageNames.CSharp)
-        {
-            string extension = ((language == LanguageNames.CSharp) ? CSharpFileExtension : VisualBasicFileExtension);
+                var parseOptions = (CSharpParseOptions)project.ParseOptions;
 
-            return $"{fileName}{suffix}.{extension}";
-        }
+                project = project
+                    .WithCompilationOptions(compilationOptions.WithAllowUnsafe(true))
+                    .WithParseOptions(parseOptions.WithLanguageVersion(LanguageVersion.Latest));
+            }
 
-        public static string GetSimplifiedAndFormattedText(Document document)
-        {
-            return GetSimplifiedAndFormattedTextAsync(document).Result;
-        }
-
-        public static async Task<string> GetSimplifiedAndFormattedTextAsync(Document document)
-        {
-            Document simplifiedDocument = await Simplifier.ReduceAsync(document, Simplifier.Annotation).ConfigureAwait(false);
-
-            SyntaxNode root = await simplifiedDocument.GetSyntaxRootAsync().ConfigureAwait(false);
-
-            root = Formatter.Format(root, Formatter.Annotation, simplifiedDocument.Project.Solution.Workspace);
-
-            return root.ToFullString();
-        }
-
-        internal static Document ApplyCodeAction(Document document, CodeAction codeAction)
-        {
-            return codeAction
-                .GetOperationsAsync(CancellationToken.None)
-                .Result
-                .OfType<ApplyChangesOperation>()
-                .Single()
-                .ChangedSolution
-                .GetDocument(document.Id);
+            return project;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
@@ -10,7 +11,13 @@ namespace Roslynator
         //TODO: move to Roslynator.CSharp
         public static LinePositionSpan ToLinePositionSpan(this TextSpan span, string s)
         {
+            if (s == null)
+                throw new ArgumentNullException(nameof(s));
+
             int length = s.Length;
+
+            if (span.Start + span.Length > length)
+                throw new ArgumentOutOfRangeException(nameof(span), span, "");
 
             LinePosition start = LinePosition.Zero;
 
@@ -22,7 +29,7 @@ namespace Roslynator
 
             LinePosition GetLinePosition(int startIndex, int endIndex)
             {
-                int i = endIndex;
+                int i = endIndex - 1;
 
                 while (i >= startIndex)
                 {

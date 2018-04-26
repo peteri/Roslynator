@@ -7,7 +7,7 @@ using Roslynator.CSharp;
 using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.CodeFixes;
 using Xunit;
-using static Roslynator.Tests.CSharpDiagnosticVerifier;
+using static Roslynator.Tests.CSharp.CSharpDiagnosticVerifier;
 
 namespace Roslynator.Analyzers.Tests
 {
@@ -19,23 +19,10 @@ namespace Roslynator.Analyzers.Tests
 
         private static CodeFixProvider CodeFixProvider { get; } = new UseExplicitTypeInsteadOfVarCodeFixProvider();
 
-        private const string SourceTemplate = @"
-using System.Collections.Generic;
-using System.Linq;
-
-class C
-{
-    void M()
-    {
-    }
-}
-";
-
         [Fact]
         public static void TestDiagnosticWithCodeFix()
         {
-            VerifyDiagnosticAndCodeFix(
-@"
+            VerifyDiagnosticAndFix(@"
 using System;
 
 class C
@@ -52,8 +39,7 @@ class C
         }
     }
 }
-",
-@"
+", @"
 using System;
 
 class C
@@ -70,17 +56,13 @@ class C
         }
     }
 }
-",
-                descriptor: Descriptor,
-                analyzer: Analyzer,
-                codeFixProvider: CodeFixProvider);
+", Descriptor, Analyzer, CodeFixProvider);
         }
 
         [Fact]
         public static void TestDiagnosticWithCodeFix_Tuple()
         {
-            VerifyDiagnosticAndCodeFix(
-@"
+            VerifyDiagnosticAndFix(@"
 using System;
 using System.Collections.Generic;
 
@@ -93,8 +75,7 @@ class C
         return default((IEnumerable<DateTime>, string));
     }
 }
-",
-@"
+", @"
 using System;
 using System.Collections.Generic;
 
@@ -107,44 +88,30 @@ class C
         return default((IEnumerable<DateTime>, string));
     }
 }
-",
-                descriptor: Descriptor,
-                analyzer: Analyzer,
-                codeFixProvider: CodeFixProvider);
+", Descriptor, Analyzer, CodeFixProvider);
         }
 
-        //[Theory]
-        //[InlineData("", "")]
-        internal static void TestDiagnosticWithCodeFix2(string fixableCode, string fixedCode)
-        {
-            VerifyDiagnosticAndCodeFix(
-                SourceTemplate,
-                fixableCode,
-                fixedCode,
-                descriptor: Descriptor,
-                analyzer: Analyzer,
-                codeFixProvider: CodeFixProvider);
-        }
-
-        //[Fact]
+        [Fact]
         internal static void TestNoDiagnostic()
         {
-            VerifyNoDiagnostic(
-@"
-",
-                descriptor: Descriptor,
-                analyzer: Analyzer);
-        }
+            VerifyNoDiagnostic(@"
+using System;
 
-        //[Theory]
-        //[InlineData("")]
-        internal static void TestNoDiagnostic2(string fixableCode)
+class C
+{
+    public void B()
+    {
+        string a = ""a"";
+
+        string s = a;
+
+        string value = null;
+        if (DateTime.TryParse(s, out DateTime result))
         {
-            VerifyNoDiagnostic(
-                SourceTemplate,
-                fixableCode,
-                descriptor: Descriptor,
-                analyzer: Analyzer);
+        }
+    }
+}
+", Descriptor, Analyzer);
         }
     }
 }

@@ -16,10 +16,10 @@ namespace Roslynator
         private static ImmutableDictionary<string, string> GetTrustedPlatformAssemblies()
         {
             return AppContext
-                        .GetData("TRUSTED_PLATFORM_ASSEMBLIES")
-                        .ToString()
-                        .Split(';')
-                        .ToImmutableDictionary(Path.GetFileName);
+                .GetData("TRUSTED_PLATFORM_ASSEMBLIES")
+                .ToString()
+                .Split(';')
+                .ToImmutableDictionary(Path.GetFileName);
         }
 
         public static PortableExecutableReference CreateFromAssemblyName(string assemblyName)

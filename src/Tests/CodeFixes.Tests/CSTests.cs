@@ -2,9 +2,8 @@
 
 using Microsoft.CodeAnalysis.CodeFixes;
 using Roslynator.CSharp;
-using Roslynator.CSharp.CodeFixes;
 using Xunit;
-using static Roslynator.Tests.CSharpCompilerCodeFixVerifier;
+using static Roslynator.Tests.CSharp.CSharpCompilerCodeFixVerifier;
 
 namespace Roslynator.CodeFixes.Tests
 {
@@ -14,7 +13,30 @@ namespace Roslynator.CodeFixes.Tests
 
         private static CodeFixProvider CodeFixProvider { get; }
 
-        private const string SourceTemplate = @"
+        //[Fact]
+        public static void TestCodeFix()
+        {
+            VerifyFix(@"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class C
+{
+    void M()
+    {
+    }
+}
+", @"
+", DiagnosticId, CodeFixProvider, EquivalenceKey.Create(DiagnosticId));
+        }
+
+        //[Theory]
+        //[InlineData("", "")]
+        public static void TestCodeFix2(string fixableCode, string fixedCode)
+        {
+            const string sourceTemplate = @"
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,40 +48,25 @@ class C
 }
 ";
 
-        //[Fact]
-        public static void TestCodeFix()
-        {
-            VerifyCodeFix(
-@"
-",
-@"
-",
-                diagnosticId: DiagnosticId,
-                codeFixProvider: CodeFixProvider,
-                equivalenceKey: EquivalenceKey.Create(DiagnosticId));
-        }
-
-        //[Theory]
-        //[InlineData("", "")]
-        public static void TestCodeFix2(string fixableCode, string fixedCode)
-        {
-            VerifyCodeFix(
-                SourceTemplate,
-                fixableCode,
-                fixedCode,
-                diagnosticId: DiagnosticId,
-                codeFixProvider: CodeFixProvider,
-                equivalenceKey: EquivalenceKey.Create(DiagnosticId));
+            VerifyFix(sourceTemplate, fixableCode, fixedCode, DiagnosticId, CodeFixProvider, EquivalenceKey.Create(DiagnosticId));
         }
 
         //[Fact]
         public static void TestNoCodeFix()
         {
-            VerifyNoCodeFix(
+            VerifyNoFix(
 @"
-",
-                codeFixProvider: CodeFixProvider,
-                equivalenceKey: EquivalenceKey.Create(DiagnosticId));
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class C
+{
+    void M()
+    {
+    }
+}
+", CodeFixProvider, EquivalenceKey.Create(DiagnosticId));
         }
     }
 }

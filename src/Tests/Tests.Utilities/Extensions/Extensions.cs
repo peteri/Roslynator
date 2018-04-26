@@ -8,14 +8,9 @@ namespace Roslynator
 {
     public static class Extensions
     {
-        public static string ToMultilineString(this IEnumerable<Diagnostic> diagnostics)
+        public static string ToDebugString(this IEnumerable<Diagnostic> diagnostics)
         {
-            return string.Join("\r\n", diagnostics.Select(d => d.ToString()));
-        }
-
-        public static string ToFullString(this Document document)
-        {
-            return document.GetSyntaxRootAsync().Result.ToFullString();
+            return $"\r\n\r\nDiagnostics:\r\n{string.Join("\r\n", diagnostics.Select(d => d.ToString()))}\r\n";
         }
     }
 }
